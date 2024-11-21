@@ -17,4 +17,4 @@ const postSchema = new mongoose.Schema({
 
 }, {timestamps: true})
 
-export const UserSchema = new mongoose.model("Post", postSchema)
+export const Post = new mongoose.model("Post", postSchema)

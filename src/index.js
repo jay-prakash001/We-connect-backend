@@ -5,10 +5,10 @@ import { app } from './app.js';
 dotenv.config({
     path:'./env'
 })
-
+const port = process.env.PORT || 3500
 dbConnect().then(()=>{
-    app.listen(8000,()=>{
-        console.log('app is running on port 8000')
+    app.listen(port,()=>{
+        console.log('app is running on port ', port)
 
     })
 }).catch((error)=>{
