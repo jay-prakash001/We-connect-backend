@@ -11,36 +11,18 @@ console.log(req.files)
 // const img = await uploadOnCloudinary(imgLocalPath)
 
 // console.log(img)
-    const { name, phone ,lat, long, city, pin_code, state} = req.body;
+    const { name, phone } = req.body;
 
     // Validation for top-level fields
     if ([name, phone].some((field) => !field || field.toString().trim() === "")) {
 
-        throw new ApiError(400, "Name, profile image, and phone are required");
+        throw new ApiError(400, "Name,  and phone are required");
     }
 
     // Validation for nested location fields
+
+
     
-    if (
-        [lat, long, city, pin_code, state].some(
-            (field) => field === undefined || field === null || field.toString().trim() === ""
-        )
-    ) {
-        throw new ApiError(400, "All location fields are required");
-    }
-    if (lat < -90 || lat > 90) {
-        throw new ApiError(400, "Latitude must be between -90 and 90");
-    }
-    if (long < -180 || long > 180) {
-
-        throw new ApiError(400, "Longitude must be between -180 and 180");
-    }
-
-    // Specific validation for pin code length
-    if (pin_code.toString().length !== 6) {
-
-        throw new ApiError(400, "Pin code must be a 6-digit number");
-    }
 
     // Specific validation for phone number
     if (!/^\d{10}$/.test(phone)) {
@@ -71,13 +53,7 @@ console.log(req.files)
     }
 
     const client = await Client.create({
-        name:name, profileImg: img.url, location: {
-            lat: lat,
-            long: long,
-            city: city,
-            state: state,
-            pin_code: pin_code
-        },phone:phone
+        name:name, profileImg: img.url,phone:phone
     })
 
     const createdUser = await Client.findById(client._id)
@@ -88,7 +64,7 @@ console.log(req.files)
     return res.status(201).json(
         new ApiResponse(200,createdUser,"user created successfully")
     )
-    res.end()
+ 
 })
 const createWorker = asyncHandler(async (req, res) => {
     console.log('create worker')
