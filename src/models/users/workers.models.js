@@ -4,7 +4,29 @@ import {locationSchema} from "./client.models.js";
 
 
 
+const locationSchema = new mongoose.Schema({
+    lat:{
+        type : Number, 
+        required : true
+    },
+    long : {
+        type : Number, 
+        required : true
+    },
+    city : {
+        type : String,
+        required : true
+    }, 
+    pin_code : {
+        type : Number ,
+        required : true
+    }, 
+    state : {
+        type : String , 
+        required : true
+    }
 
+})
 const workerSchema = new mongoose.Schema({
 
     name :{
