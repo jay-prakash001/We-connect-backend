@@ -12,3 +12,6 @@ Javascript, Node js, Express Js, MongoDb, Mongoose
 - [@Abdulrazzaque6](https://github.com/Abdulrazzaque6)
 - [@jay-prakash001](https://github.com/jay-prakash001)
 
+# Completed Work 
+## -> Otp login and registration 
+

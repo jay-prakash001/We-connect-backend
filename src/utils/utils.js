@@ -1,0 +1,1 @@
+export const profileImg = "https://res-console.cloudinary.com/dm7a2laej/media_explorer_thumbnails/590f565de665920d978fb30a69fcc9ac/detailed"

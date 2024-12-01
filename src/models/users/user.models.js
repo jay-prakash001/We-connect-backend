@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
-
-
-
-
-
-
-const clientSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
 
     name :{
         type : String, 
@@ -20,8 +14,16 @@ const clientSchema = new mongoose.Schema({
         type :Number,
         required:true
     },
+    refreshToken:{
+        type : String,
+        required:true,
+        default: ""
+    }
 
 
 }, {timestamps:true})
 
-export const Client = mongoose.model("Client", clientSchema)
+
+
+
+export const User = mongoose.model("Client", userSchema)

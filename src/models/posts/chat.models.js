@@ -3,12 +3,12 @@ import mongoose from 'mongoose';
 const chatSchema = new mongoose.Schema({
     clientId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Client",
+        ref:"User",
         required:true
     },
     workerId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Worker",
+        ref:"User",
         required:true
     },
     postId :{
