@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
- const locationSchema = new mongoose.Schema({
+ export const locationSchema = new mongoose.Schema({
     lat: {
         type: Number,
         required: true

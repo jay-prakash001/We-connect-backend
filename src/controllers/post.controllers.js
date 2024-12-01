@@ -1,15 +1,61 @@
-
 import asyncHandler from "../utils/asyncHandler.utils.js";
+import uploadOnCloudinary from "../utils/cloudinary.utils.js";
+import {Post} from "../models/posts/posts.models.js";
+import mongoose from "mongoose";
+import {ApiError} from "../utils/ApiError.utils.js";
 
-const create_post = asyncHandler(async (req, res)=>{
-
+const create_post = asyncHandler(async (req, res) => {
+    const {title, description, lat, long, city, state, pin_code} = req.body;
     console.log(req.body)
-    console.log(req.files)
-    console.log(req.phone)
+    const localImages = req.files?.postImg || []
+    const paths = await Promise.all(
+        localImages.map(async (localImage) => {
+            const url = await uploadOnCloudinary(localImage.path);
+            return url.url;
+        })
+    );
 
-    
-res.end()
+    const post = await Post.create({
+        title,
+        description,
+        location: {
+            lat,
+            long,
+            city,
+            state,
+            pin_code
+        },
+        imagesUrl: paths,
+        client: new mongoose.Types.ObjectId(req.user._id)
+    })
+    console.log(post);
+    res.end()
 })
 
 
-export {create_post}
+const deletePost = asyncHandler(async (req, res) => {
+
+    const {id} = req.params;
+    console.log(id);
+    if (!id) {
+        throw new ApiError(404, " post id is required");
+
+    }
+
+
+    const user = req.user;
+
+    if (!user) {
+        throw new ApiError(404, " Unauthorized access token");
+    }
+    const post = await Post.findByIdAndDelete(id)
+
+    if (!post) {
+        throw new ApiError(400, " post not found");
+    }
+    console.log(post);
+
+    res.end()
+})
+
+export {create_post, deletePost};
