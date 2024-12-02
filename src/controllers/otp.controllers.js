@@ -53,6 +53,7 @@ const verifyOtp = asyncHandler(async(req, res) =>{
 
     try {
         const otpRecieved = await Otp.findOne({ client_phone, otp })
+        console.log(otpRecieved)
         if (!otpRecieved) {
             console.log('not found')
             res.status(400).json({ success: false, error: 'not found' })
@@ -76,9 +77,10 @@ const verifyOtp = asyncHandler(async(req, res) =>{
                 })
 
             }
-
+            console.log(existingUser)
             existingUser.refreshToken = refreshToken
             existingUser.save({validateBeforeSave:false})
+            console.log(existingUser)
             return res.status(201).cookie("accessToken", accessToken, options)
                 .cookie("refreshToken", refreshToken, options).json(
                 new ApiResponse(200, {user : existingUser, refreshToken, accessToken}, "user fetched successfully")

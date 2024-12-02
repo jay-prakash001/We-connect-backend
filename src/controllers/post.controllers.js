@@ -70,7 +70,7 @@ const getPersonalPost = asyncHandler(async (req, res) => {
     ])
 
     console.log(posts);
-    res.end(posts);
+    res.end();
 
 })
 const getPostNearWorker = asyncHandler(async (req, res) => {
