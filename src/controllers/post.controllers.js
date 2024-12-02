@@ -4,6 +4,7 @@ import {Post} from "../models/posts/posts.models.js";
 import mongoose from "mongoose";
 import {ApiError} from "../utils/ApiError.utils.js";
 
+
 const create_post = asyncHandler(async (req, res) => {
     const {title, description, lat, long, city, state, pin_code} = req.body;
     console.log(req.body)
@@ -58,4 +59,22 @@ const deletePost = asyncHandler(async (req, res) => {
     res.end()
 })
 
-export {create_post, deletePost};
+const getPersonalPost = asyncHandler(async (req, res) => {
+    const user = req.user;
+    const posts = await Post.aggregate([
+        {
+            $match: {
+                from :new mongoose.Types.ObjectId(req.user._id)
+            }
+        }
+    ])
+
+    console.log(posts);
+    res.end(posts);
+
+})
+const getPostNearWorker = asyncHandler(async (req, res) => {
+
+
+})
+export {create_post, deletePost,getPostNearWorker,getPersonalPost};
