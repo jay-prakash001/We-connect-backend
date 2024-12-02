@@ -17,5 +17,11 @@ app.use("/api/v1/auth/",otpRouter) // all work done
 app.use("/api/v1/user/",userRouter)
 app.use("/api/v1/post/",postRouter)
 
+app.get("/",(req, res)=>{
+
+    return res.status(200).json("hello")
+    res.end()
+})
+
 
 export default app; 
