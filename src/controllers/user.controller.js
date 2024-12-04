@@ -98,7 +98,13 @@ const logOut = asyncHandler(async (req, res) => {
 })
 
 
-export { createWorker,  setUserDetails,logOut };
+const get_user_details =asyncHandler(async(req, res)=>{
+    console.log(req.user)
+
+    res.end()
+})
+
+export { createWorker,  setUserDetails,logOut,get_user_details };
 
 
 
