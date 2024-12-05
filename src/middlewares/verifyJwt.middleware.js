@@ -5,13 +5,13 @@ import {User} from "../models/users/user.models.js";
 export const verifyJwt = asyncHandler(async (req, res, next) => {
 
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
-    console.log(token);
+    // console.log(token);
     // try {
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        console.log(decodedToken);
+        // console.log(decodedToken);
         const user = await User.findOne({ username: decodedToken.username });
-        console.log(user);
+        // console.log(user);
        if(user){
 
             req.user = user;

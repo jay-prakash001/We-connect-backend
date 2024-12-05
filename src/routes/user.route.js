@@ -20,5 +20,8 @@ router.route('/create_worker').patch(
 
 router.route('/get_user_details').get(verifyJwt,get_user_details)
 
+router.route('/change_profile_img').patch(
+    upload.single("profileImg")
+)
 router.route('/logout').post(verifyJwt,logOut)
 export default router

@@ -26,4 +26,4 @@ const userSchema = new mongoose.Schema({
 
 
 
-export const User = mongoose.model("Client", userSchema)
+export const User = mongoose.model("User", userSchema)

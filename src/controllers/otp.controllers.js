@@ -22,7 +22,7 @@ const generateAccessAndRefreshTokens = async (client_phone) => {
 const getOtp = asyncHandler(async (req, res) => {
 
     const { client_phone } = req.body
-
+    console.log(client_phone)
     if (!client_phone) {
         return res.status(400).json({ success: false, error: "Phone number is required." })
     }
