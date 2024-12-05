@@ -94,20 +94,8 @@ const getPersonalPost = asyncHandler(async (req, res) => {
 const getPersonalPost0 = asyncHandler(async (req, res) => {
 
     
-//     try {
         const user = req.user;
-//     const posts = await Post.aggregate([
-//         {
-//             $match: {
-//                 from :new mongoose.Types.ObjectId(user._id)
-//             }
-//         }
-//     ])
-//     console.log(posts)
-//    return  res.status(200).json(new ApiResponse(200,posts,"posts fetched successfully"))
-//     } catch (error) {
-//         throw new ApiError(400,error)
-//     }
+
 
 const client = req.user._id
 try {
