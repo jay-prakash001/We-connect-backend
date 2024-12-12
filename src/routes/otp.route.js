@@ -8,7 +8,7 @@ import {verifyJwt} from "../middlewares/verifyJwt.middleware.js";
 const router = Router()
 
 router.route('/get_otp').post(getOtp)
-
+ 
 router.route('/verify_otp').post(verifyOtp)
 
 
