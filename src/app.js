@@ -20,8 +20,7 @@ app.use("/api/v1/post/",postRouter)
 app.get("/",(req, res)=>{
 
     return res.status(200).json("hello")
-    res.end()
 })
 
-
+ 
 export default app; 

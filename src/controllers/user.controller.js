@@ -3,7 +3,6 @@ import asyncHandler from "../utils/asyncHandler.utils.js";
 import uploadOnCloudinary from "../utils/cloudinary.utils.js";
 import {ApiError} from '../utils/ApiError.utils.js';
 import {ApiResponse} from '../utils/ApiResponse.utils.js';
-import {phone} from "../utils/getOtp.js";
 import {profileImg} from "../utils/utils.js";
 import mongoose from "mongoose";
 import {Worker} from "../models/users/workers.models.js";

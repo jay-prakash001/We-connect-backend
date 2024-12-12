@@ -7,9 +7,16 @@ import twilio from 'twilio';
 }
 
 
-const sid = process.env.SID
-const token = process.env.TOKEN
-const phone = process.env.PHONE
-const client = twilio(sid, token)
+// const sid = process.env.SID
+// const token = process.env.TOKEN
+// const phone = process.env.PHONE
+// const client = twilio(sid, token)
 
-export { sid, token, client, generateOTP,phone}
+
+const accountSid = process.env.SID
+const authToken = process.env.TOKEN
+const verifyServiceSid = process.env.SERVICE_ID
+
+const client = twilio(accountSid, authToken)
+
+export { client,verifyServiceSid}
