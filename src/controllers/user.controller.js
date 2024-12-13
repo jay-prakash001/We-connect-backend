@@ -123,14 +123,19 @@ const get_user_details = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, req.user, "user fetched successfully"))
 })
 const get_worker_details = asyncHandler(async (req, res) => {
-    console.log(req.user)
-    try {
-        const worker = await Worker.findOne({user : req.user._id})
+    
+    res.status(200)
+    
+    // console.log(req.user)
+    // try {
+    //     const worker = await Worker.findOne({user : req.user._id})
 
-        return res.status(200).json(new ApiResponse(200, {user : req.user, worker : worker}, "user fetched successfully"))
-    } catch (error) {
-        throw new ApiError(401,"fetching worker detail failed ",error)
-    }
+    //     return res.status(200).json(new ApiResponse(200, {user : req.user, worker : worker}, "user fetched successfully"))
+    // } catch (error) {
+    //     throw new ApiError(401,"fetching worker detail failed ",error)
+    // }
+
+
 
 })
 
