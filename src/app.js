@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser";
 app.use("/api/v1/auth/",otpRouter) // all work done
 
 
-// verify jwt tokens
+// verify jwt tokens 
 
 app.use("/api/v1/user/",userRouter)
 app.use("/api/v1/post/",postRouter)

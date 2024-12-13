@@ -105,10 +105,12 @@ const verifyOtp = asyncHandler(async (req, res) => {
 });
 
 
-const testUserCreation = asyncHandler(async(req,res)=>{
+const testUserCreation = asyncHandler( async (req, res) => {
+
+
   try {
     const {client_phone} = req.body
-  
+    console.log(client_phone)
     const user = await User.create({
       name: `${client_phone}@weconnect`, profileImg: profileImg, phone: client_phone, refreshToken:"123"
     })
@@ -124,7 +126,6 @@ const testUserCreation = asyncHandler(async(req,res)=>{
   
               user.refreshToken = refreshToken
               user.save({validateBeforeSave:false})
-              console.log(user)
   
               return res.status(201).cookie("accessToken", accessToken, options)
                   .cookie("refreshToken", refreshToken, options).json(
