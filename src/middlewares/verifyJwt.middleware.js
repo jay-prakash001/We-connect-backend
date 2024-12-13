@@ -10,8 +10,8 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
     try {
         
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        // console.log(decodedToken);
-        const user = await User.findOne({ username: decodedToken.username });
+        console.log(decodedToken);
+        const user = await User.findOne({ phone: decodedToken.phone });
         if(user){
             
             req.user = user;
