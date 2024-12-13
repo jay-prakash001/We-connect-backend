@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createWorker, setUserDetails,logOut,get_user_details} from "../controllers/user.controller.js";
+import { createWorker, setUserDetails,logOut,get_user_details,get_worker_details,update_profileImg} from "../controllers/user.controller.js";
 import { upload } from '../middlewares/multer.middleware.js';
 import {verifyJwt} from "../middlewares/verifyJwt.middleware.js";
 
@@ -19,9 +19,10 @@ router.route('/create_worker').patch(
     createWorker)
 
 router.route('/get_user_details').get(verifyJwt,get_user_details)
+router.route('/get_worker_details').get(verifyJwt,get_worker_details)
 
-router.route('/change_profile_img').patch(
+router.route('/update_profileImg').patch(
     upload.single("profileImg")
-)
+,verifyJwt,update_profileImg)
 router.route('/logout').post(verifyJwt,logOut)
 export default router

@@ -91,9 +91,8 @@ const verifyOtp = asyncHandler(async (req, res) => {
       await existingUser.save({ validateBeforeSave: false });
 
       return res.status(201)
-        // Uncomment cookies if needed
-        // .cookie("accessToken", accessToken, options)
-        // .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
         .json(new ApiResponse(200, { user: existingUser, refreshToken, accessToken }, "User fetched successfully"));
     } else {
       console.log('OTP verification failed.');
@@ -105,97 +104,36 @@ const verifyOtp = asyncHandler(async (req, res) => {
   }
 });
 
-// const verifyOtp0 = asyncHandler(async(req, res) =>{
 
-//     const { client_phone, otp } = req.body; 
-//     if (!client_phone || !otp) {
-//         return res.status(400).json({ success: false, error: "Phone number and OTP are required" });
-//     }
-
-//     try {
-        
-//       client.verify.v2.services(verifyServiceSid)
-//       .verificationChecks
-//       .create({
-//         to: `+91${client_phone}`,
-//         code: otp
-//       })
-//       .then(async verificationCheck => {
-//         if (verificationCheck.status === 'approved') {
-//           console.log('OTP verified successfully!');
-    
-//           let existingUser = await User.findOne({ phone: client_phone });
-//           if (!existingUser) {
-//             existingUser = await User.create({
-//               name: `${client_phone}@weconnect`,
-//               profileImg: profileImg,
-//               phone: client_phone,
-//               refreshToken: ""
-//             });
-//           }
-    
-//           const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(client_phone);
-    
-//           const options = {
-//             httpOnly: true,
-//             secure: true
-//           };
-    
-//           existingUser.refreshToken = refreshToken;
-//           await existingUser.save({ validateBeforeSave: false });
-    
-//           return res.status(201)
-//             // .cookie("accessToken", accessToken, options)
-//             // .cookie("refreshToken", refreshToken, options)
-//             .json(new ApiResponse(200, { user: existingUser, refreshToken, accessToken }, "User fetched successfully"));
-//         } else {
-//           console.log('OTP verification failed.');
-//           return res.status(400).json({ error: 'OTP verification failed.' });
-//         }
-//       })
-//       .catch(error => {
-//         console.error('Error verifying OTP:', error);
-//         return res.status(500).json({ error: 'An error occurred during OTP verification.' });
-//       });
-    
-
-//     } catch (error) {
-//         console.log(error)
-//         res.status(400).json({success:false, messaage : error})
-//     }
-
-//     res.end()
-
-// })
 const testUserCreation = asyncHandler(async(req,res)=>{
-  const {client_phone} = req.body
-
-  const user = await User.create({
-    name: `${client_phone}@weconnect`, profileImg: profileImg, phone: client_phone, refreshToken:"123"
-  })
-
-  console.log(user)
-  const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(client_phone)
-            
-            // console.log(accessToken)
-            // console.log("xxxxxxxxxxxxxxxx")
-            // console.log(refreshToken)
-            
-
-            const options = {
-                httpOnly: true, secure: true
-            }
-
-            user.refreshToken = refreshToken
-            user.save({validateBeforeSave:false})
-            console.log(user)
-
-            return res.status(201).cookie("accessToken", accessToken, options)
-                .cookie("refreshToken", refreshToken, options).json(
-                new ApiResponse(200, {user : user, refreshToken, accessToken}, "user fetched successfully")
-            )
-
-           
-  res.end()
+  try {
+    const {client_phone} = req.body
+  
+    const user = await User.create({
+      name: `${client_phone}@weconnect`, profileImg: profileImg, phone: client_phone, refreshToken:"123"
+    })
+  
+    console.log(user)
+    const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(client_phone)
+              
+              
+  
+              const options = {
+                  httpOnly: true, secure: true
+              }
+  
+              user.refreshToken = refreshToken
+              user.save({validateBeforeSave:false})
+              console.log(user)
+  
+              return res.status(201).cookie("accessToken", accessToken, options)
+                  .cookie("refreshToken", refreshToken, options).json(
+                  new ApiResponse(200, {user : user, refreshToken, accessToken}, "user fetched successfully")
+              )
+  
+             
+  } catch (error) {
+    throw new ApiError(400, "failed user creation ", error)
+  }
 })
 export { getOtp, verifyOtp,testUserCreation }

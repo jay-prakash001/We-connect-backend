@@ -26,5 +26,14 @@ const uploadOnCloudinary = async (localFilePath)=>{
         return null
     }
 }
+const uploadImagesToCloudinary = async (localImages) => {
+            const uploadPromises = localImages.map((localImage) => uploadOnCloudinary(localImage.path));
+            const results = await Promise.all(uploadPromises);
+            return results.map((result) => {
+                console.log(result)
+                
+                return result.url});
+        };
 
-export default uploadOnCloudinary
+        
+export { uploadOnCloudinary, uploadImagesToCloudinary}
