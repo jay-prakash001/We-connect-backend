@@ -5,8 +5,8 @@ import {User} from "../models/users/user.models.js";
 export const verifyJwt = asyncHandler(async (req, res, next) => {
 
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
-    console.log("token")
-    console.log(token);
+    // console.log("token")
+    // console.log(token);
     try {
         
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -16,8 +16,8 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
             
             req.user = user;
         }
-        console.log("user")
-        console.log(user);
+        // console.log("user")
+        // console.log(user);
         
         
         next()

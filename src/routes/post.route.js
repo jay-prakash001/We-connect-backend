@@ -17,4 +17,8 @@ router.route('/delete_post/:id').delete(verifyJwt,deletePost)
 
 router.route("/get_user_posts").get(verifyJwt, getPersonalPost)
 
+router.route("/get_post_near_worker").post(verifyJwt, getPostNearWorker)
+
+
+
 export default router   

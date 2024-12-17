@@ -14,4 +14,5 @@ Javascript, Node js, Express Js, MongoDb, Mongoose
 
 # Completed Work 
 ## -> Otp login and registration 
+## otp route done 
 
