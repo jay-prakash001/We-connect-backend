@@ -4,6 +4,7 @@ import { Post } from "../models/posts/posts.models.js";
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.utils.js";
 import { ApiResponse } from "../utils/ApiResponse.utils.js";
+import Api from "twilio/lib/rest/Api.js";
 
 
 
@@ -85,20 +86,17 @@ const getPersonalPost = asyncHandler(async (req, res) => {
         console.log("Fetched posts:", posts);
 
         // Send successful response
-        return res.status(200).json({
-            status: 200,
-            data: posts,
-            message: "Posts fetched successfully",
-        });
+        return res.status(200).json(new ApiResponse(
+            200,
+            posts,
+             "Posts fetched successfully",
+        ));
     } catch (error) {
         console.error("Error fetching posts via aggregate:", error);
 
         // Send error response
-        return res.status(500).json({
-            status: 500,
-            message: "Failed to fetch posts",
-            error: error.message,
-        });
+      
+        throw new ApiError(500, "failed to fetch posts")
     }
 });
 
@@ -122,12 +120,16 @@ const getPostNearWorker = asyncHandler(async (req, res) => {
     const client = req.user._id; // Extract client ID from the authenticated user
     const { lat, long, city, pin_code, distance } = req.body;
 
+
+    if(!lat || !long || !distance){
+        throw new ApiError(400, "empty fields")
+    }
     try {
         // Define location filter for geospatial query
         let locationFilter = {};
 
         // If lat and long are provided, filter posts based on proximity
-        if (lat && long) {
+        if (lat && long && distance) {
             locationFilter['location.coordinates'] = {
                 $geoWithin: {
                     $centerSphere: [
@@ -136,6 +138,8 @@ const getPostNearWorker = asyncHandler(async (req, res) => {
                     ]
                 }
             };
+        }else{
+            throw new ApiError(400, "all fields required")
         }
 
         // Use aggregation pipeline to filter posts
@@ -175,23 +179,19 @@ const getPostNearWorker = asyncHandler(async (req, res) => {
             }
         ]);
 
-        console.log("Fetched posts:", posts);
 
         // Send successful response
-        return res.status(200).json({
-            status: 200,
-            data: posts,
-            message: "Posts fetched successfully",
-        });
+        return res.status(200).json( 
+        
+        new ApiResponse(   200,
+           posts,
+            "Posts fetched successfully",)
+        );
     } catch (error) {
         console.error("Error fetching posts via aggregate:", error);
 
         // Send error response
-        return res.status(500).json({
-            status: 500,
-            message: "Failed to fetch posts",
-            error: error.message,
-        });
+     throw new ApiError(500, "Unable to fetch posts")
     }
 
 })
