@@ -147,16 +147,39 @@ const get_approach_user = asyncHandler(async (req, res) => {
 })
 const deleteApproach = asyncHandler(async (req, res) => {
 
-    const {approachId} = req.body
+    try {
+        const { approachId } = req.body
+    
+        const worker = await Worker.findOne({ user: req.user._id })
 
-    const worker = await Worker.findOne({ user: req.user._id })
-    if(req.user || worker){
-        
+        if ( !req.user || !worker) {
+            throw  new ApiError(401, "invalid user credential")
+                }
+
+
+     
+        const approach = await Approach.findOne({ _id: new mongoose.Types.ObjectId(approachId) })
+    
+        if(!approach){
+            
+         throw new ApiError(401, "approach not found!")
+        }
+
+        if (approach.workerId.toString() === worker._id.toString()) {
+            const res = await Approach.findByIdAndDelete({ _id: new mongoose.Types.ObjectId(approachId) })
+    
+            return res.status(200).json(new ApiResponse(200, res, "approach deleted successfully"))
+        }
+        else{
+
+          throw  new ApiError(401, "unauthorized access")
+        }
+    
+    } catch (error) {
+        throw new ApiError(404, `${error}`)
     }
-    console.log(worker)
+
     res.end()
-
-
 
 })
 export { createApproach, get_approach_worker, get_approach_user, deleteApproach }
