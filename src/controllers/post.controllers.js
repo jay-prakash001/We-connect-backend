@@ -1,12 +1,12 @@
 import asyncHandler from "../utils/asyncHandler.utils.js";
-import  { uploadImagesToCloudinary } from "../utils/cloudinary.utils.js";
+import { uploadImagesToCloudinary } from "../utils/cloudinary.utils.js";
 import { Post } from "../models/posts/posts.models.js";
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.utils.js";
 import { ApiResponse } from "../utils/ApiResponse.utils.js";
 import Api from "twilio/lib/rest/Api.js";
 
-
+import {Approach} from '../models/posts/approaches.models.js'
 
 
 const create_post = asyncHandler(async (req, res) => {
@@ -18,8 +18,8 @@ const create_post = asyncHandler(async (req, res) => {
         throw new ApiError(400, "all fields are required")
     }
     try {
-       
-      const paths=  await uploadImagesToCloudinary(localImages);
+
+        const paths = await uploadImagesToCloudinary(localImages);
 
         if (paths.length === 0) {
             throw new ApiError(500, "something went wrong ")
@@ -71,7 +71,35 @@ const deletePost = asyncHandler(async (req, res) => {
 
     res.end()
 })
-const getPersonalPost = asyncHandler(async (req, res) => {
+// const getPersonalPostTested = asyncHandler(async (req, res) => {
+//     const client = req.user._id; // Extract client ID from the authenticated user
+//     try {
+//         // Use aggregation pipeline to filter posts
+//         const posts = await Post.aggregate([
+//             {
+//                 $match: {
+//                     client: new mongoose.Types.ObjectId(client), // Match client field to user ID
+//                 },
+//             },
+//         ]);
+
+//         console.log("Fetched posts:", posts);
+
+//         // Send successful response
+//         return res.status(200).json(new ApiResponse(
+//             200,
+//             posts,
+//             "Posts fetched successfully",
+//         ));
+//     } catch (error) {
+//         console.error("Error fetching posts via aggregate:", error);
+
+//         // Send error response
+
+//         throw new ApiError(500, "failed to fetch posts")
+//     }
+// });
+const getPersonalPost0 = asyncHandler(async (req, res) => {
     const client = req.user._id; // Extract client ID from the authenticated user
     try {
         // Use aggregation pipeline to filter posts
@@ -81,6 +109,14 @@ const getPersonalPost = asyncHandler(async (req, res) => {
                     client: new mongoose.Types.ObjectId(client), // Match client field to user ID
                 },
             },
+            {
+                $lookup: {
+                    from: 'approaches',
+                    localField: 'postId',
+                    foreignField: 'approaches',
+                    as: 'approachesList'
+                }
+            }
         ]);
 
         console.log("Fetched posts:", posts);
@@ -89,39 +125,48 @@ const getPersonalPost = asyncHandler(async (req, res) => {
         return res.status(200).json(new ApiResponse(
             200,
             posts,
-             "Posts fetched successfully",
+            "Posts fetched successfully",
         ));
     } catch (error) {
         console.error("Error fetching posts via aggregate:", error);
 
         // Send error response
-      
+
         throw new ApiError(500, "failed to fetch posts")
     }
 });
 
-const getPersonalPost0 = asyncHandler(async (req, res) => {
-
-
-    const user = req.user;
-
+const getPersonalPost = asyncHandler(async (req, res) => {
 
     const client = req.user._id
     try {
-        const posts = await Post.find({ client })
-        console.log(posts);
+
+        const posts = await Post.find()
+        .populate({
+            path: "approaches",
+            // select: "content workerId"  // Select the fields you need from the Approach
+        });
+        
+      
+    
+    console.log(posts);
+    
+        
+        return res.status(200).json(new ApiResponse(200, { posts }, "fetched successfully"))
     } catch (error) {
         console.error("Aggregation error:", error);
     }
     res.end()
 
 })
+
+
 const getPostNearWorker = asyncHandler(async (req, res) => {
     const client = req.user._id; // Extract client ID from the authenticated user
     const { lat, long, city, pin_code, distance } = req.body;
 
 
-    if(!lat || !long || !distance){
+    if (!lat || !long || !distance) {
         throw new ApiError(400, "empty fields")
     }
     try {
@@ -138,7 +183,7 @@ const getPostNearWorker = asyncHandler(async (req, res) => {
                     ]
                 }
             };
-        }else{
+        } else {
             throw new ApiError(400, "all fields required")
         }
 
@@ -181,18 +226,42 @@ const getPostNearWorker = asyncHandler(async (req, res) => {
 
 
         // Send successful response
-        return res.status(200).json( 
-        
-        new ApiResponse(   200,
-           posts,
-            "Posts fetched successfully",)
+        return res.status(200).json(
+
+            new ApiResponse(200,
+                posts,
+                "Posts fetched successfully",)
         );
     } catch (error) {
         console.error("Error fetching posts via aggregate:", error);
 
         // Send error response
-     throw new ApiError(500, "Unable to fetch posts")
+        throw new ApiError(500, "Unable to fetch posts")
     }
 
 })
-export { create_post, deletePost, getPostNearWorker, getPersonalPost };
+
+const updatePostStatus = asyncHandler(async (req, res) => {
+
+    console.log('hello')
+    const { postId } = req.body
+    console.log(postId)
+    // const post = await Post.findOne({ _id: new mongoose.Types.ObjectId(postId) });
+
+    const post = await Post.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(postId) },
+        [
+            {
+                $set: {
+                    isOpen: { $eq: [false, "$isOpen"] } // Toggles the value of isOpen
+                }
+            }
+        ], {
+        new: true
+    })
+
+
+
+    console.log(post)
+    res.end()
+})
+export { create_post, deletePost, getPostNearWorker, getPersonalPost, updatePostStatus };

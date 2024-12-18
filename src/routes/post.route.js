@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {create_post, deletePost, getPersonalPost, getPostNearWorker} from "../controllers/post.controllers.js";
+import {create_post, deletePost, getPersonalPost, getPostNearWorker, updatePostStatus} from "../controllers/post.controllers.js";
 import { upload } from '../middlewares/multer.middleware.js';
 import {verifyJwt} from "../middlewares/verifyJwt.middleware.js";
 
@@ -19,6 +19,7 @@ router.route("/get_user_posts").get(verifyJwt, getPersonalPost)
 
 router.route("/get_post_near_worker").post(verifyJwt, getPostNearWorker)
 
+router.route('/update_post_status').patch(verifyJwt, updatePostStatus)
 
 
 export default router   
