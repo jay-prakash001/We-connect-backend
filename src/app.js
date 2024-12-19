@@ -10,6 +10,8 @@ import userRouter from './routes/user.route.js';
 import postRouter from './routes/post.route.js';
 import approachRouter from './routes/approach.route.js'
 import cookieParser from "cookie-parser";
+
+import chatRouter from './routes/chat.route.js'
 app.use("/api/v1/auth/",otpRouter) // all work done
 
 
@@ -18,6 +20,7 @@ app.use("/api/v1/auth/",otpRouter) // all work done
 app.use("/api/v1/user/",userRouter)
 app.use("/api/v1/post/",postRouter)
 app.use("/api/v1/approach",approachRouter)
+app.use("/api/v1/chat", chatRouter)
 
 app.get("/",(req, res)=>{
 

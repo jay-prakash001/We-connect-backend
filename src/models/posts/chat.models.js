@@ -1,19 +1,19 @@
 import mongoose from 'mongoose';
 
 const chatSchema = new mongoose.Schema({
-    clientId:{
+    senderId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true
     },
-    workerId:{
+    recieverId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true
     },
-    postId :{
+    approachId :{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Post",
+        ref:"Approach",
         required:true
     },
     content:{

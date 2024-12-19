@@ -107,13 +107,21 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
 const testUserCreation = asyncHandler( async (req, res) => {
 
-
+  
+  
   try {
     const {client_phone} = req.body
     console.log(client_phone)
-    const user = await User.create({
-      name: `${client_phone}@weconnect`, profileImg: profileImg, phone: client_phone, refreshToken:"123"
-    })
+
+    let user = await User.findOne({ phone: client_phone });
+   
+
+      if(!user){
+
+        user = await User.create({
+         name: `${client_phone}@weconnect`, profileImg: profileImg, phone: client_phone, refreshToken:"123"
+       })
+      }
   
     console.log(user)
     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(client_phone)
@@ -137,4 +145,6 @@ const testUserCreation = asyncHandler( async (req, res) => {
     throw new ApiError(400, "failed user creation ", error)
   }
 })
+
+
 export { getOtp, verifyOtp,testUserCreation }
