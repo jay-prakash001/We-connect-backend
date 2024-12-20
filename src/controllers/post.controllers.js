@@ -265,6 +265,9 @@ const updatePostStatus = asyncHandler(async (req, res) => {
     res.end()
 })
 
+
+
+
 const getPostById = asyncHandler(async (req, res) => {
     try {
         const { postId } = req.body
@@ -273,12 +276,14 @@ const getPostById = asyncHandler(async (req, res) => {
             throw new ApiError(400, "post id is required")
         }
 
-        const post = await Post.findById({ _id: new mongoose.Types.ObjectId(postId) })
+        const post = await Post.findById({ _id: new mongoose.Types.ObjectId(postId) }).populate('client')
+
 
         if (!post) {
             throw new ApiError(404, "post not found")
         }
 
+     
         return res.status(200).json(
             new ApiResponse(200, post, "post fetched successfully")
         )
