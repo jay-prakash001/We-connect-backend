@@ -6,7 +6,7 @@ import { ApiError } from "../utils/ApiError.utils.js";
 import { ApiResponse } from "../utils/ApiResponse.utils.js";
 import Api from "twilio/lib/rest/Api.js";
 
-import {Approach} from '../models/posts/approaches.models.js'
+import { Approach } from '../models/posts/approaches.models.js'
 
 
 const create_post = asyncHandler(async (req, res) => {
@@ -142,16 +142,16 @@ const getPersonalPost = asyncHandler(async (req, res) => {
     try {
 
         const posts = await Post.find()
-        .populate({
-            path: "approaches",
-            // select: "content workerId"  // Select the fields you need from the Approach
-        });
-        
-      
-    
-    console.log(posts);
-    
-        
+            .populate({
+                path: "approaches",
+                // select: "content workerId"  // Select the fields you need from the Approach
+            });
+
+
+
+        console.log(posts);
+
+
         return res.status(200).json(new ApiResponse(200, { posts }, "fetched successfully"))
     } catch (error) {
         console.error("Aggregation error:", error);
@@ -264,4 +264,29 @@ const updatePostStatus = asyncHandler(async (req, res) => {
     console.log(post)
     res.end()
 })
-export { create_post, deletePost, getPostNearWorker, getPersonalPost, updatePostStatus };
+
+const getPostById = asyncHandler(async (req, res) => {
+    try {
+        const { postId } = req.body
+
+        if (!postId) {
+            throw new ApiError(400, "post id is required")
+        }
+
+        const post = await Post.findById({ _id: new mongoose.Types.ObjectId(postId) })
+
+        if (!post) {
+            throw new ApiError(404, "post not found")
+        }
+
+        return res.status(200).json(
+            new ApiResponse(200, post, "post fetched successfully")
+        )
+
+
+    } catch (error) {
+        console.log(error)
+
+    }
+})
+export { create_post, deletePost, getPostNearWorker, getPersonalPost, updatePostStatus, getPostById };
