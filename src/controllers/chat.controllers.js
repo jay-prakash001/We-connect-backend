@@ -85,6 +85,11 @@ try {
                     }
                 }
             }
+        },
+        {
+            $addFields:{
+                approach:approach.content
+            }
         }
     ])
 
