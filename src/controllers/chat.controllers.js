@@ -5,7 +5,99 @@ import { ApiError } from "../utils/ApiError.utils.js";
 import { ApiResponse } from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
 import mongoose from "mongoose";
-const sendChat = asyncHandler(async (req, res) => {
+
+
+
+const sendChat = asyncHandler(async(req, res)=>{
+try {
+    
+        const {approachId, content} = req.body
+    
+    
+        if(!approachId || !content){
+            throw new ApiError(401, "all fields required")
+        }
+    
+        const user = req.user
+        // console.log(user)
+    
+        if(!user){
+            throw new ApiError(401, "unauthorized access")
+        }
+        const approach = await Approach.findById({_id:new mongoose.Types.ObjectId(approachId)})
+    
+        console.log(approach)
+        if(!approach){
+            throw new ApiError(401, 'invalid approachId')
+        }
+        const chat = await Chat.create({
+            senderId:user._id,
+            approachId:approach._id,
+            content:content
+        })
+        if(chat){
+            return res.status(201).json(new ApiResponse(201, chat, "chat send successfully"))
+        }
+} catch (error) {
+    console.log(error)
+
+}
+    res.end()
+})
+
+
+const getChat =asyncHandler(async(req, res)=>{
+try {
+    
+    const {approachId} = req.body
+    console.log(approachId)
+    const user = req.user
+    if(!user){
+        throw new ApiError(401, 'unauthorized access')
+    }
+
+    if(!approachId){
+        throw new ApiError(401, 'approachId is required')
+    }
+
+
+    const approach = await Approach.findById({_id:new mongoose.Types.ObjectId(approachId)})
+
+    if(!approach){
+        throw new ApiError(404, 'approach not found')
+    }
+
+    // console.log(approach)
+
+    const chats = await Chat.aggregate([
+        {
+            $match:{
+                approachId:approach._id
+            }
+        },
+        {
+            $addFields:{
+                isSender:{
+                    $cond:{
+                        if:{$eq:["$senderId",user._id]},
+                        then:true,
+                        else:false
+                    }
+                }
+            }
+        }
+    ])
+
+    console.log(chats)
+
+    return res.status(200).json(new ApiResponse(200, chats, "chats fetched successfully"))
+    res.end()
+
+} catch (error) {
+    console.log(error)
+}
+})
+const sendChat0 = asyncHandler(async (req, res) => {
 
     console.log(req.body);
     try {
@@ -18,12 +110,13 @@ const sendChat = asyncHandler(async (req, res) => {
 
         const reciever = await User.findById({ _id: new mongoose.Types.ObjectId(recieverId) })
 
-        // console.log(sender)
-        // console.log("_-----------------_")
+        console.log(sender)
+        console.log("_-----------------_")
 
-        // console.log(reciever)
+        console.log(reciever)
+        res.end()
         const approach = await Approach.findById({ _id: new mongoose.Types.ObjectId(approachId) })
-
+ 
         // console.log("----------------")
         // console.log(approach)
 
@@ -50,7 +143,7 @@ const sendChat = asyncHandler(async (req, res) => {
 })
 
 
-const getChat = asyncHandler(async (req, res) => {
+const getChat0 = asyncHandler(async (req, res) => {
 
     const user = req.user
     console.log(user)
@@ -71,5 +164,7 @@ const getChat = asyncHandler(async (req, res) => {
 
     res.end()
 })
+
+
 
 export { sendChat, getChat }
