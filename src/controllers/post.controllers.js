@@ -159,9 +159,89 @@ const getPersonalPost = asyncHandler(async (req, res) => {
     res.end()
 
 })
+const getPostNearWorker = asyncHandler(async(req, res)=>{
+    const client = req.user._id; // Extract client ID from the authenticated user
+    const { lat, long } = req.body;
+
+    if (!lat || !long) {
+        return res.status(400).json({ message: "Latitude and longitude are required" });
+    }
+
+    try {
+        const maxDistanceInKm = 80; // Maximum distance in kilometers
+
+        // Ensure lat and long are parsed as numbers
+        const latitude = parseFloat(lat);
+        const longitude = parseFloat(long);
+
+        // const posts = await Post.find()
 
 
-const getPostNearWorker = asyncHandler(async (req, res) => {
+        // Aggregation pipeline with geospatial query
+        const posts = await Post.aggregate([
+            {
+                $geoNear: {
+                    near: {
+                        type: "Point",
+                        coordinates: [longitude, latitude], // [Longitude, Latitude]
+                    },
+                    distanceField: "distance", // Field to store calculated distance
+                    maxDistance: maxDistanceInKm * 1000, // Convert km to meters
+                    spherical: true // Use spherical calculation for accuracy
+                }
+            },
+          
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "client",
+                    foreignField: "_id",
+                    as: "client"
+                }
+            },
+            {
+                $unwind: "$client" // Flatten client array
+            },
+            {
+                $project: {
+                    title: 1,
+                    description: 1,
+                    location: 1,
+                    imagesUrl: 1,
+                    client: {
+                        name: "$client.name",
+                        phone: "$client.phone",
+                        profileImg: "$client.profileImg"
+                    },
+                    isOpen: 1,
+                    approaches: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    distance: 1 // Include distance in the result
+                }
+            }
+        ]);
+
+        // Send successful response
+        return res.status(200).json({
+            status: 200,
+            data: posts,
+            message: "Posts fetched successfully"
+        });
+    } catch (error) {
+        console.error("Error fetching nearby posts:", error);
+
+        // Send error response
+        return res.status(500).json({
+            status: 500,
+            message: "Failed to fetch posts",
+            error: error.message,
+        });
+    }
+});
+
+
+const getPostNearWorker0 = asyncHandler(async (req, res) => {
     const client = req.user._id; // Extract client ID from the authenticated user
     const { lat, long, city, pin_code, distance } = req.body;
 
