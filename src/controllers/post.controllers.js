@@ -141,7 +141,7 @@ const getPersonalPost = asyncHandler(async (req, res) => {
     const client = req.user._id
     try {
 
-        const posts = await Post.find()
+        const posts = await Post.find({client})
             .populate({
                 path: "approaches",
                 // select: "content workerId"  // Select the fields you need from the Approach
